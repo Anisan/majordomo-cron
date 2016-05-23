@@ -168,11 +168,11 @@ function updateJobs()
 { 
 	$objects=getObjectsByClass($this->nameClass);
 	foreach($objects as $obj) {
-		if (getGlobal($obj['TITLE'].".enable")=="1")
+		if (getGlobal($obj['TITLE'].".Enable")=="1")
 		{ 
 			if ($this->jobExists($this->nameClass."_".$obj['TITLE'])==0)
 			{
-				$timestamp = $this->parse(getGlobal($obj['TITLE'].".crontab"));
+				$timestamp = $this->parse(getGlobal($obj['TITLE'].".Crontab"));
 				$date_time_array = getdate($timestamp);
 				$hours = $date_time_array['hours'];
 				$minutes = $date_time_array['minutes'];
@@ -248,7 +248,6 @@ function _parseCronNumbers($s,$min,$max){
 
 	//class
     $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
-      
     if (!$rec['ID'])
     {
         $rec = array();
@@ -256,9 +255,57 @@ function _parseCronNumbers($s,$min,$max){
         $rec['DESCRIPTION'] = 'Cron scheduler';
         $rec['ID'] = SQLInsert('classes', $rec);
     }
-	//properties
-	 
 	//methods 
+	//Run
+    $recRun = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Run'");
+    if (!$recRun['ID'])
+    {
+        $recRun = array();
+        $recRun['TITLE'] = "Run";
+        $recRun['DESCRIPTION'] = 'Исполняемый метод';
+        $recRun['ID'] = SQLInsert('methods', $recRun);
+    }
+    $recRun['CODE'] = "\$this->setProperty('LastRun',date('Y-m-d H:i:s'));";
+    SQLUpdate('methods', $recRun);
+    //Update
+    $recUpdate = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Update'");
+    if (!$recUpdate['ID'])
+    {
+        $recUpdate = array();
+        $recUpdate['TITLE'] = "Update";
+        $recUpdate['DESCRIPTION'] = 'Обновление задачи';
+        $recUpdate['ID'] = SQLInsert('methods', $recUpdate);
+    }
+    $recUpdate['CODE'] = "\$name='Cron_'.\$this->object_title;\n".
+                         "SQLSelectOne(\"DELETE FROM jobs WHERE title=\".\$name);";
+    SQLUpdate('methods', $recUpdate);
+    //properties
+    $recEnable = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");
+    if (!$recEnable['ID'])
+    {
+        $recEnable = array();
+        $recEnable['TITLE'] = 'Enable';
+        $recEnable['DESCRIPTION'] = 'Вкл - 1, выкл - 0';
+        $recEnable['ONCHANGE'] = 'Update';
+        $recEnable['ID'] = SQLInsert('properties', $recEnable);
+    }
+    $recCrontab = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Crontab'");
+    if (!$recCrontab['ID'])
+    {
+        $recCrontab = array();
+        $recCrontab['TITLE'] = 'Crontab';
+        $recCrontab['DESCRIPTION'] = 'Периодичность выполнения (cron синтаксис)';
+        $recCrontab['ONCHANGE'] = 'Update';
+        $recCrontab['ID'] = SQLInsert('properties', $recCrontab);
+    }
+    $recLastrun = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'LastRun'");
+    if (!$recLastrun['ID'])
+    {
+        $recLastrun = array();
+        $recLastrun['TITLE'] = 'LastRun';
+        $recLastrun['DESCRIPTION'] = 'Последний запуск';
+        $recLastrun['ID'] = SQLInsert('properties', $recLastrun);
+    } 
 	 
 	parent::install();
 }

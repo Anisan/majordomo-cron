@@ -245,8 +245,30 @@ function _parseCronNumbers($s,$min,$max){
 * @access private
 */
  function install($data='') {
-  parent::install();
- }
+
+	//class
+    $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
+      
+    if (!$rec['ID'])
+    {
+        $rec = array();
+        $rec['TITLE'] = $this->nameClass;
+        $rec['DESCRIPTION'] = 'Cron scheduler';
+        $rec['ID'] = SQLInsert('classes', $rec);
+    }
+	//properties
+	 
+	//methods 
+	 
+	parent::install();
+}
+
+public function uninstall()
+   {
+      //SQLExec("delete from classes where title = '".$this->nameClass."'");
+      
+      parent::uninstall();
+   }
 // --------------------------------------------------------------------
 }
 /*

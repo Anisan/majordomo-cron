@@ -117,11 +117,11 @@ function admin(&$out) {
         if ($this->view_mode=='' || $this->view_mode=='search_cron') {
            $this->search_cron($out);
         } 
-        if ($this->view_mode=='user_edit') {
-            $this->edit_user($out, $this->id);
+        if ($this->view_mode=='job_edit') {
+            $this->edit_job($out, $this->id);
         }
-        if ($this->view_mode=='user_delete') {
-          $this->delete_user($this->id);
+        if ($this->view_mode=='job_delete') {
+          $this->delete_job($this->id);
           $this->redirect("?");
         } 
     }
@@ -137,6 +137,16 @@ function usual(&$out) {
  $this->admin($out);
 }
 
+function edit_job(&$out, $id) {
+	require(DIR_MODULES.$this->name.'/job_edit.inc.php');
+}
+
+function delete_job($id) {
+	$rec=SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
+	// some action for related tables
+	//SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'"); 
+}
+
 
  function search_cron(&$out) {
     $sql = "SELECT *, (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.enable')) as ENABLE, ".
@@ -150,7 +160,6 @@ function usual(&$out) {
         $out['JOBS']=$jobs;
         //print_r ($jobs);
     }
-
  }
  
  function log($text)
@@ -277,7 +286,7 @@ function _parseCronNumbers($s,$min,$max){
         $recUpdate['ID'] = SQLInsert('methods', $recUpdate);
     }
     $recUpdate['CODE'] = "\$name='Cron_'.\$this->object_title;\n".
-                         "SQLSelectOne(\"DELETE FROM jobs WHERE title=\".\$name);";
+                         "SQLSelectOne(\"DELETE FROM jobs WHERE title='\".\$name.\"'\");";
     SQLUpdate('methods', $recUpdate);
     //properties
     $recEnable = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");

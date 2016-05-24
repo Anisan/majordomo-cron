@@ -1,3 +1,13 @@
- [#if VIEW_MODE="search_mysensors" || VIEW_MODE=""#]
+[#if VIEW_MODE="search_mysensors" || VIEW_MODE=""#]
   [#inc search_admin.html#]
- [#endif VIEW_MODE#]
+[#endif VIEW_MODE#]
+
+[#if VIEW_MODE="job_edit"#]
+    <p align=center>
+        <a href="?tab=cmd">&lt;&lt;&lt; <#LANG_BACK#></a>
+    </p>  
+    [#if ID!=""#]
+        [#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+    [#endif ID#]   
+    [#inc job_edit.html#]
+[#endif VIEW_MODE#]

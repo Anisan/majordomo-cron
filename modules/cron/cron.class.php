@@ -143,8 +143,10 @@ function edit_job(&$out, $id) {
 
 function delete_job($id) {
 	$rec=SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
-	//TODO DELETE
-	//SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'"); 
+	//DELETE
+    SQLExec("DELETE FROM pvalues WHERE OBJECT_ID='".$rec['ID']."'"); 
+	SQLExec("DELETE FROM methods WHERE OBJECT_ID='".$rec['ID']."'"); 
+	SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'"); 
 }
 
 
@@ -166,11 +168,16 @@ function delete_job($id) {
 	  }
 	if (!$sortby_jobs) $sortby_jobs="TITLE";
 	$out['SORTBY']=$sortby_jobs; 
-    $sql = "SELECT *, (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.enable')) as ENABLE, ".
-        " (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.lastRun')) as LAST_RUN, ".
-        " (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.crontab')) as crontab, ".
-        " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.title)) as NEXT_RUN ".
-        " FROM `objects` WHERE `CLASS_ID`=(select ID from classes where TITLE='Cron') ORDER BY ".$sortby_jobs;
+    $rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
+    $recEnable = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");
+    $recLastRun = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'LastRun'");
+    $recCrontab = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Crontab'");
+    
+    $sql = "SELECT *, (select value from pvalues where PROPERTY_ID=".$recEnable["ID"]." and OBJECT_ID=`objects`.ID) as ENABLE, ".
+        " (select value from pvalues where PROPERTY_ID=".$recLastRun["ID"]." and OBJECT_ID=`objects`.ID) as LAST_RUN, ".
+        " (select value from pvalues where PROPERTY_ID=".$recCrontab["ID"]." and OBJECT_ID=`objects`.ID) as crontab, ".
+        " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.Title)) as NEXT_RUN ".
+        " FROM `objects` WHERE `CLASS_ID`=".$rec["ID"]." ORDER BY ".$sortby_jobs;
     //echo $sql;
     $jobs=SQLSelect($sql);
     if ($jobs[0]['ID']) {

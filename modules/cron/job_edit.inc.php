@@ -75,6 +75,8 @@ if ($this->mode=='update') {
     }
 	$recOut["ENABLE"] = $enable;
 	$recOut["CRONTAB"] = $crontab;
+	$recOut["TITLE"] = $title;
+	$recOut["DESCRIPTION"] = $description;
   }
     $ok=1;
 }

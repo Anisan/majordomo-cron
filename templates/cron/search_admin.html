@@ -13,7 +13,7 @@
 			</div>
 			<div class="modal-body">
 				<p> Модуль Cron.<br>
-				Обсуждение модуля <a href="http://majordomo.smartliving.ru/forum/viewtopic.php?f=5" target="_blank">здесь</a>.<br>
+				Обсуждение модуля <a href="http://majordomo.smartliving.ru/forum/viewtopic.php?f=5&t=2977" target="_blank">здесь</a>.<br>
 				</p>
                 <hr size="1">
 				<div class="float-right">
@@ -84,30 +84,39 @@
 <table class="table table-stripped">
 <tr>
  <td bgcolor="#AAAAAA">
- <b>Enable</b>
+ <a href="?sortby_jobs=ENABLE">Enable</a><nobr>
+ [#if SORTBY="ENABLE"#](+)[#endif#]
+ [#if SORTBY="ENABLE DESC"#](-)[#endif#]</nobr> 
  </td>
  <td bgcolor="#AAAAAA">
- <b>Title</b>
+ <a href="?sortby_jobs=TITLE">Title</a><nobr>
+ [#if SORTBY="TITLE"#](+)[#endif#]
+ [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr> 
  </td>
  <td bgcolor="#AAAAAA">
- <b>Description</b>
+ <a href="?sortby_jobs=DESCRIPTION">Description</a><nobr>
+ [#if SORTBY="DESCRIPTION"#](+)[#endif#]
+ [#if SORTBY="DESCRIPTION DESC"#](-)[#endif#]</nobr> 
  </td>
  <td bgcolor="#AAAAAA">
- <b>Next run</b>
+ <a href="?sortby_jobs=NEXT_RUN">Next run</a><nobr>
+ [#if SORTBY="NEXT_RUN"#](+)[#endif#]
+ [#if SORTBY="NEXT_RUN DESC"#](-)[#endif#]</nobr> 
  <td bgcolor="#AAAAAA">
- <b>Last run</b>
+ <a href="?sortby_jobs=LAST_RUN">Last run</a><nobr>
+ [#if SORTBY="LAST_RUN"#](+)[#endif#]
+ [#if SORTBY="LAST_RUN DESC"#](-)[#endif#]</nobr> 
  </td>
 <td bgcolor="#AAAAAA">&nbsp;</td>
 </tr>
 [#begin JOBS#]
 <tr class="hover_btn2">
  <td>
-    [#if ENABLE!=""#]
-   [#ENABLE#]
+ [#if ENABLE==1#]
+   <img src="./img/icons/status/green_32.png">
   [#else#]
-   &nbsp;
-  [#endif#]
-  
+   <img src="./img/icons/status/red_32.png">
+  [#endif#] 
  </td>
  <td>
   [#if TITLE!=""#]

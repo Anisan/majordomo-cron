@@ -149,11 +149,28 @@ function delete_job($id) {
 
 
  function search_cron(&$out) {
+	global $session;
+	// FIELDS ORDER
+	global $sortby_jobs;
+	if (!$sortby_jobs) {
+	   $sortby_jobs=$session->data['cron_sort'];
+	} else {
+	   if ($session->data['cron_sort']==$sortby_jobs) {
+		if (Is_Integer(strpos($sortby_jobs, ' DESC'))) {
+		 $sortby_jobs=str_replace(' DESC', '', $sortby_jobs);
+		} else {
+		 $sortby_jobs=$sortby_jobs." DESC";
+		}
+	   }
+	   $session->data['cron_sort']=$sortby_jobs;
+	  }
+	if (!$sortby_jobs) $sortby_jobs="TITLE";
+	$out['SORTBY']=$sortby_jobs; 
     $sql = "SELECT *, (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.enable')) as ENABLE, ".
         " (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.lastRun')) as LAST_RUN, ".
         " (select value from pvalues where PROPERTY_NAME= CONCAT(title,'.crontab')) as crontab, ".
         " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.title)) as NEXT_RUN ".
-        " FROM `objects` WHERE `CLASS_ID`=(select ID from classes where TITLE='Cron')";
+        " FROM `objects` WHERE `CLASS_ID`=(select ID from classes where TITLE='Cron') ORDER BY ".$sortby_jobs;
     //echo $sql;
     $jobs=SQLSelect($sql);
     if ($jobs[0]['ID']) {

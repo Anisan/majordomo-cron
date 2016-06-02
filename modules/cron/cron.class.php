@@ -143,7 +143,7 @@ function edit_job(&$out, $id) {
 
 function delete_job($id) {
 	$rec=SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
-	// some action for related tables
+	//TODO DELETE
 	//SQLExec("DELETE FROM objects WHERE ID='".$rec['ID']."'"); 
 }
 
@@ -273,7 +273,7 @@ function _parseCronNumbers($s,$min,$max){
  function install($data='') {
 
 	//class
-    $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
+    $rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
     if (!$rec['ID'])
     {
         $rec = array();
@@ -281,24 +281,26 @@ function _parseCronNumbers($s,$min,$max){
         $rec['DESCRIPTION'] = 'Cron scheduler';
         $rec['ID'] = SQLInsert('classes', $rec);
     }
-	//methods 
+    //methods 
 	//Run
-    $recRun = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Run'");
+    $recRun = SQLSelectOne("SELECT * FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Run'");
     if (!$recRun['ID'])
     {
         $recRun = array();
         $recRun['TITLE'] = "Run";
+        $recRun['CLASS_ID'] = $rec['ID'];
         $recRun['DESCRIPTION'] = 'Исполняемый метод';
         $recRun['ID'] = SQLInsert('methods', $recRun);
     }
     $recRun['CODE'] = "\$this->setProperty('LastRun',date('Y-m-d H:i:s'));";
     SQLUpdate('methods', $recRun);
     //Update
-    $recUpdate = SQLSelectOne("SELECT ID FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Update'");
+    $recUpdate = SQLSelectOne("SELECT * FROM methods WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Update'");
     if (!$recUpdate['ID'])
     {
         $recUpdate = array();
         $recUpdate['TITLE'] = "Update";
+        $recUpdate['CLASS_ID'] = $rec['ID'];
         $recUpdate['DESCRIPTION'] = 'Обновление задачи';
         $recUpdate['ID'] = SQLInsert('methods', $recUpdate);
     }
@@ -306,29 +308,32 @@ function _parseCronNumbers($s,$min,$max){
                          "SQLSelectOne(\"DELETE FROM jobs WHERE title='\".\$name.\"'\");";
     SQLUpdate('methods', $recUpdate);
     //properties
-    $recEnable = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");
+    $recEnable = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");
     if (!$recEnable['ID'])
     {
         $recEnable = array();
         $recEnable['TITLE'] = 'Enable';
+        $recEnable['CLASS_ID'] = $rec['ID'];
         $recEnable['DESCRIPTION'] = 'Вкл - 1, выкл - 0';
         $recEnable['ONCHANGE'] = 'Update';
         $recEnable['ID'] = SQLInsert('properties', $recEnable);
     }
-    $recCrontab = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Crontab'");
+    $recCrontab = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Crontab'");
     if (!$recCrontab['ID'])
     {
         $recCrontab = array();
         $recCrontab['TITLE'] = 'Crontab';
+        $recCrontab['CLASS_ID'] = $rec['ID'];
         $recCrontab['DESCRIPTION'] = 'Периодичность выполнения (cron синтаксис)';
         $recCrontab['ONCHANGE'] = 'Update';
         $recCrontab['ID'] = SQLInsert('properties', $recCrontab);
     }
-    $recLastrun = SQLSelectOne("SELECT ID FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'LastRun'");
+    $recLastrun = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'LastRun'");
     if (!$recLastrun['ID'])
     {
         $recLastrun = array();
         $recLastrun['TITLE'] = 'LastRun';
+        $recLastrun['CLASS_ID'] = $rec['ID'];
         $recLastrun['DESCRIPTION'] = 'Последний запуск';
         $recLastrun['ID'] = SQLInsert('properties', $recLastrun);
     } 

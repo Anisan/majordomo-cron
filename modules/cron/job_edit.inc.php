@@ -80,8 +80,10 @@ if ($this->mode=='update') {
   }
     $ok=1;
 }
-
-$recOut["CODE"] = $recCode['CODE'];
+if ($rec['ID'])
+    $recOut["CODE"] = $recCode['CODE'];
+else
+    $recOut["CODE"]="";
 
 outHash($recOut, $out);
   

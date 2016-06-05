@@ -19,6 +19,7 @@ if ($this->owner->name=='panel') {
 
 $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
 $recOut = $rec;
+if ($rec['ID']){
 $recProperties=SQLSelect("SELECT *, (select TITLE from properties where properties.ID=pvalues.Property_id) as TITLE FROM pvalues where `OBJECT_ID`= '$id'");
 foreach($recProperties as $property)
 {
@@ -27,8 +28,8 @@ foreach($recProperties as $property)
 	if ($property['TITLE'] == "Crontab") 
 		$recOut["CRONTAB"] = $property['VALUE'];
 }    
-
 $recCode=SQLSelectOne("SELECT * FROM `methods` WHERE `OBJECT_ID` ='$id' AND TITLE='Run'");
+}
 
 if ($this->mode=='update') { 
   $ok=1;
@@ -58,7 +59,7 @@ if ($this->mode=='update') {
 		}
 		else
 		{
-			//todo create methods
+			//create methods
 			$recCode['OBJECT_ID']=$id;
 			$recCode['TITLE']="Run";
 			$recCode['CALL_PARENT']=1;

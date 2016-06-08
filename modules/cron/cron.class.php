@@ -124,6 +124,15 @@ function admin(&$out) {
           $this->delete_job($this->id);
           $this->redirect("?");
         } 
+		if ($this->view_mode=='job_switch') {
+			global $title;
+            $cur = gg($title.".Enable");
+			if ($cur == 1)
+				sg($title.".Enable",0);
+			else
+				sg($title.".Enable",1); 
+			$this->redirect("?");
+        } 
     }
 }
 /**

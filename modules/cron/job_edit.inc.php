@@ -35,6 +35,8 @@ if ($this->mode=='update') {
   $ok=1;
   if ($this->tab=='') {
     global $title;
+    //delete old job
+    SQLExec("DELETE FROM jobs WHERE title='Cron_".$rec['TITLE']."'"); 
     $rec['TITLE']=$title;
     global $description;
     $rec['DESCRIPTION']=$description;
@@ -43,6 +45,22 @@ if ($this->mode=='update') {
     global $code;
     $recCode['CODE']=$code;
     
+    //check name object
+    if ($title!="" && $crontab!="")
+    {
+        $recDublicate=SQLSelectOne("SELECT * FROM objects WHERE TITLE='".$title."'");
+        if ($recDublicate['ID']){
+            if ($rec['ID']!=$recDublicate['ID'])
+            {
+                $ok=0;
+                $out['ERR_MESSAGE']="Object name '".$title."' already exists!";
+            }
+        }
+    }
+    else{
+        $ok=0;
+        $out['ERR_MESSAGE']="<#LANG_FILLOUT_REQURED#>";    
+    }
     //UPDATING RECORD
     if ($ok) {
 		if ($rec['ID']) {
@@ -57,8 +75,7 @@ if ($this->mode=='update') {
 		if ($recCode['ID']) {
 			SQLUpdate("methods", $recCode);
 		}
-		else
-		{
+		else {
 			//create methods
 			$recCode['OBJECT_ID']=$id;
 			$recCode['TITLE']="Run";
@@ -79,7 +96,6 @@ if ($this->mode=='update') {
 	$recOut["TITLE"] = $title;
 	$recOut["DESCRIPTION"] = $description;
   }
-    $ok=1;
 }
 if ($rec['ID'])
     $recOut["CODE"] = $recCode['CODE'];

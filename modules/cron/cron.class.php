@@ -185,7 +185,7 @@ function delete_job($id) {
     $sql = "SELECT *, (select value from pvalues where PROPERTY_ID=".$recEnable["ID"]." and OBJECT_ID=`objects`.ID) as ENABLE, ".
         " (select value from pvalues where PROPERTY_ID=".$recLastRun["ID"]." and OBJECT_ID=`objects`.ID) as LAST_RUN, ".
         " (select value from pvalues where PROPERTY_ID=".$recCrontab["ID"]." and OBJECT_ID=`objects`.ID) as crontab, ".
-        " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.Title)) as NEXT_RUN ".
+        " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.Title) LIMIT 1) as NEXT_RUN ".
         " FROM `objects` WHERE `CLASS_ID`=".$rec["ID"]." ORDER BY ".$sortby_jobs;
     //echo $sql;
     $jobs=SQLSelect($sql);

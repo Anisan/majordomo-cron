@@ -5,7 +5,7 @@
 <div class="alert alert-success"><#LANG_DATA_SAVED#></div>
 [#endif OK#]
 [#if ERR#]
-<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+<div class="alert alert-danger">[#ERR_MESSAGE#]</div>
 [#endif ERR#]
 <fieldset>
 <!-- Enable -->
@@ -15,7 +15,7 @@
 </div>
 <!-- Name -->
 <div class="form-group">
- <label class="control-label">Title</label>
+ <label class="control-label">Title <font color="red">*</font></label>
  <div class="controls"><input  type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
 </div>
 <!-- DESCRIPTION -->
@@ -25,7 +25,7 @@
 </div>
 <!-- CRONTAB -->
 <div class="form-group">
- <label class="control-label">Crontab</label>
+ <label class="control-label">Crontab <font color="red">*</font></label>
  <div class="controls"><input  type="text" name="crontab" value="[#CRONTAB#]" class="form-control input"></div>
 </div>
   

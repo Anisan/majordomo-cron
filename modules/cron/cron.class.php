@@ -212,6 +212,7 @@ function updateJobs()
 	foreach($objects as $obj) {
 		if (getGlobal($obj['TITLE'].".Enable")=="1")
 		{ 
+			if (getGlobal($obj['TITLE'].".Crontab")=="@reboot") continue;
 			if ($this->jobExists($this->nameClass."_".$obj['TITLE'])==0)
 			{
 				$timestamp = $this->parse(getGlobal($obj['TITLE'].".Crontab"));
@@ -227,6 +228,20 @@ function updateJobs()
 			}
 		}
 	}
+}
+
+function rebootJobs()
+{ 
+    $this->log("Run reboot jobs");
+    $objects=getObjectsByClass($this->nameClass);
+    foreach($objects as $obj) {
+        if (getGlobal($obj['TITLE'].".Enable")=="1")
+        { 
+            if (getGlobal($obj['TITLE'].".Crontab")!="@reboot")
+                continue;
+            callMethod($obj['TITLE'].".Run");
+        }
+    }
 }
 
 function jobExists($title) {

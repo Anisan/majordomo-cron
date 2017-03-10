@@ -52,8 +52,7 @@
 	</div>
 </div>
 
-<div>
- Cron  </br>
+<div> Cron &nbsp;
 <a href="?view_mode=job_edit&data_source=<#DATA_SOURCE#>" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>  
  &nbsp;
 </div>
@@ -82,37 +81,39 @@
 <!-- search results (list) -->
 <form action="?" method="post" name="frmList_cron" style="padding:0px">
 <table class="table table-stripped">
+<thead>
 <tr>
- <td bgcolor="#AAAAAA">
+ <td>
  <a href="?sortby_jobs=ENABLE">Enable</a><nobr>
  [#if SORTBY="ENABLE"#](+)[#endif#]
  [#if SORTBY="ENABLE DESC"#](-)[#endif#]</nobr> 
  </td>
- <td bgcolor="#AAAAAA">
+ <td>
  <a href="?sortby_jobs=TITLE">Title</a><nobr>
  [#if SORTBY="TITLE"#](+)[#endif#]
  [#if SORTBY="TITLE DESC"#](-)[#endif#]</nobr> 
  </td>
- <td bgcolor="#AAAAAA">
+ <td>
  <a href="?sortby_jobs=DESCRIPTION">Description</a><nobr>
  [#if SORTBY="DESCRIPTION"#](+)[#endif#]
  [#if SORTBY="DESCRIPTION DESC"#](-)[#endif#]</nobr> 
  </td>
- <td bgcolor="#AAAAAA">
+ <td>
  <a href="?sortby_jobs=NEXT_RUN">Next run</a><nobr>
  [#if SORTBY="NEXT_RUN"#](+)[#endif#]
  [#if SORTBY="NEXT_RUN DESC"#](-)[#endif#]</nobr> 
- <td bgcolor="#AAAAAA">
+ <td>
  <a href="?sortby_jobs=LAST_RUN">Last run</a><nobr>
  [#if SORTBY="LAST_RUN"#](+)[#endif#]
  [#if SORTBY="LAST_RUN DESC"#](-)[#endif#]</nobr> 
  </td>
-<td bgcolor="#AAAAAA">&nbsp;</td>
+<td>&nbsp;</td>
 </tr>
+</thead>
 [#begin JOBS#]
 <tr class="hover_btn2">
  <td>
-  <a href="?view_mode=job_switch&title=[#TITLE#]">
+  <a href="?view_mode=job_switch&title=[#TITLE#]" title="Switch Enable">
  [#if ENABLE==1#]
    <img src="./img/icons/status/green_32.png">
   [#else#]
@@ -122,7 +123,7 @@
  </td>
  <td>
   [#if TITLE!=""#]
-   [#TITLE#]
+   <a href="?view_mode=job_edit&id=[#ID#]">[#TITLE#]</a>
   [#else#]
    &nbsp;
   [#endif#]

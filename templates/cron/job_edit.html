@@ -1,3 +1,43 @@
+<div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="about1" aria-hidden="true">
+<!-- <div id="about" class="modal hide"> -->
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Синтаксис</h4>
+			</div>
+			<div class="modal-body">
+				<p>
+Задается в виде <b>1 2 3 4 5</b>, где<br>
+1. Минута (0 - 59)<br>
+2. Час (0 - 23)<br>
+3. День (1 - 31)<br>
+4. Месяц (1 - 12)<br>
+5. День недели (0 - 7) (Воскресенье =0 или =7)<br>
+                </p>
+                <p><b>Специальные символы</b><br>
+/ - приращение значений. Например, "*/15" в области "Минута" будет выполнять каждые 15 минут;<br>
+* - все значения в пределах одного фрагмента cron-выражения. Например, в поле "Час" специальный символ "*" обозначает, что задача будет выполняться каждый час;<br>
+- - определение диапазонов. Например, "10-12" в поле "День" означает дни 10, 11 и 12;<br>
+, - перечисление значений. К примеру, значения "1,3" в поле "Месяц" будут использоваться в cron-выражении в виде запуска задачи в январь и март;<br>
+                </p>
+                <p><b>Примеры</b><br>
+                Каждый день в 03:15: 15 3 * * *<br>
+Каждый понедельник: 0 0 * * 1<br>
+Каждый четный час: 0 */2 * * *<br>
+Каждые 10 минут: */10 * * * *<br>
+Каждый будний день в 22:00: 0 22 * * 1-5<br>
+Каждый будний день каждые полчаса с 11:00 до 19:30: */30 11-19 * * 1-5
+                </p>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- Table 'node' edit -->
 <br/>
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
@@ -26,7 +66,12 @@
 <!-- CRONTAB -->
 <div class="form-group">
  <label class="control-label">Crontab <font color="red">*</font></label>
- <div class="controls"><input  type="text" name="crontab" value="[#CRONTAB#]" class="form-control input"></div>
+ <div class="controls input-group">
+    <input  type="text" name="crontab" value="[#CRONTAB#]" class="form-control input">
+    <span class="input-group-btn">
+        <button class="btn btn-secondary" data-toggle="modal" data-target="#about">Help&nbsp;&nbsp;<span class="glyphicon glyphicon-question-sign"></span>
+    </span>
+ </div>
 </div>
   
 <!-- CODE (text) -->

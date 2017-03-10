@@ -336,7 +336,7 @@ function _parseCronNumbers($s,$min,$max){
         $recUpdate['ID'] = SQLInsert('methods', $recUpdate);
     }
     $recUpdate['CODE'] = "\$name='Cron_'.\$this->object_title;\n".
-                         "SQLSelectOne(\"DELETE FROM jobs WHERE title='\".\$name.\"'\");";
+                         "SQLExec(\"DELETE FROM jobs WHERE title='\".\$name.\"'\");";
     SQLUpdate('methods', $recUpdate);
     //properties
     $recEnable = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");

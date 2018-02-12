@@ -49,6 +49,12 @@
    [#end CATEGORIES#]
   </select>
  </div> 
+ &nbsp;&nbsp;&nbsp;
+	[#if CYCLERUN==1#]
+		<span class="label label-success" title="Статус цикла">Цикл запущен</span>
+	[#else#]
+		<span class="label label-danger" title="Статус цикла">Цикл остановлен</span>
+	[#endif#]
  </form>&nbsp;
 <!--#
  @version 0.2

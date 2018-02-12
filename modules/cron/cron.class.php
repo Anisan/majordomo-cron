@@ -113,6 +113,11 @@ function run() {
 * @access public
 */
 function admin(&$out) {
+    if ((time() - gg('cycle_cronRun')) < 60 ) {
+			$out['CYCLERUN'] = 1;
+		} else {
+			$out['CYCLERUN'] = 0;
+		}
     if ($this->data_source=='cron' || $this->data_source=='') {
         if ($this->view_mode=='' || $this->view_mode=='search_cron') {
            $this->search_cron($out);
@@ -192,7 +197,12 @@ function delete_job($id) {
     //echo $sql;
     $jobs=SQLSelect($sql);
     $out['TOTAL'] = count($jobs);
-    $cats = array_count_values(array_map(function($element) {  return $element['CATEGORY'];}, $jobs ));
+    $cats = array();
+    foreach ($jobs as $element)
+    {
+        if ($element['CATEGORY']) $cats[] = $element['CATEGORY'];
+    }
+    $cats = array_count_values($cats);
     $categories = array();
     foreach ($cats as $key => $value)
     {

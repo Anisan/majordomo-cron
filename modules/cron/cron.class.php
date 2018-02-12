@@ -113,7 +113,7 @@ function run() {
 * @access public
 */
 function admin(&$out) {
-    if ($this->data_source=='telegram' || $this->data_source=='') {
+    if ($this->data_source=='cron' || $this->data_source=='') {
         if ($this->view_mode=='' || $this->view_mode=='search_cron') {
            $this->search_cron($out);
         } 
@@ -181,18 +181,42 @@ function delete_job($id) {
     $recEnable = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Enable'");
     $recLastRun = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'LastRun'");
     $recCrontab = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Crontab'");
+    $recCategory = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Category'");
     
     $sql = "SELECT *, (select value from pvalues where PROPERTY_ID=".$recEnable["ID"]." and OBJECT_ID=`objects`.ID) as ENABLE, ".
         " (select value from pvalues where PROPERTY_ID=".$recLastRun["ID"]." and OBJECT_ID=`objects`.ID) as LAST_RUN, ".
         " (select value from pvalues where PROPERTY_ID=".$recCrontab["ID"]." and OBJECT_ID=`objects`.ID) as crontab, ".
+        " (select value from pvalues where PROPERTY_ID=".$recCategory["ID"]." and OBJECT_ID=`objects`.ID) as CATEGORY, ".
         " (select runtime from jobs where jobs.TITLE = CONCAT('Cron_',`objects`.Title) LIMIT 1) as NEXT_RUN ".
         " FROM `objects` WHERE `CLASS_ID`=".$rec["ID"]." ORDER BY ".$sortby_jobs;
     //echo $sql;
     $jobs=SQLSelect($sql);
-    if ($jobs[0]['ID']) {
-        $out['JOBS']=$jobs;
-        //print_r ($jobs);
+    $out['TOTAL'] = count($jobs);
+    $cats = array_count_values(array_column($jobs, 'CATEGORY'));
+    $categories = array();
+    foreach ($cats as $key => $value)
+    {
+        $categories[] = array('NAME'=> $key, 'TITLE'=>$key, "TOTAL"=> $value);
     }
+    $out['CATEGORIES']=$categories;
+    
+    global $category; 
+    if ($category) {
+        $filter_jobs = array();
+        foreach ($jobs as $job)
+        {
+            if ($job['CATEGORY'] == $category)
+                $filter_jobs[] = $job;
+        }
+        $out['JOBS']=$filter_jobs;
+        
+        $out['CATEGORY']=$category;
+    } 
+    else
+    {
+        if ($jobs[0]['ID']) $out['JOBS']=$jobs;
+    }
+    
  }
  
  function log($text)
@@ -366,6 +390,15 @@ function _parseCronNumbers($s,$min,$max){
         $recLastrun['TITLE'] = 'LastRun';
         $recLastrun['CLASS_ID'] = $rec['ID'];
         $recLastrun['DESCRIPTION'] = 'Последний запуск';
+        $recLastrun['ID'] = SQLInsert('properties', $recLastrun);
+    } 
+	$recLastrun = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Category'");
+    if (!$recLastrun['ID'])
+    {
+        $recLastrun = array();
+        $recLastrun['TITLE'] = 'Category';
+        $recLastrun['CLASS_ID'] = $rec['ID'];
+        $recLastrun['DESCRIPTION'] = 'Категория';
         $recLastrun['ID'] = SQLInsert('properties', $recLastrun);
     } 
 	 

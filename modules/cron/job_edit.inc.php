@@ -17,6 +17,19 @@ if ($this->owner->name=='panel') {
   $out['CONTROLPANEL']=1;
 }
 
+$rec = SQLSelectOne("SELECT * FROM classes WHERE TITLE LIKE '" . DBSafe($this->nameClass) . "'");
+$recCategory = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['ID']." and TITLE LIKE 'Category'");
+    
+$sql = "select value from pvalues where PROPERTY_ID=".$recCategory["ID"];
+$recCats=SQLSelect($sql);
+$cats = array_count_values(array_column($recCats, 'value'));
+$categories = array();
+foreach ($cats as $key => $value)
+{
+    $categories[] = array('NAME'=> $key, 'TITLE'=>$key, "TOTAL"=> $value);
+}
+$out['CATEGORIES']=$categories;
+
 $rec=SQLSelectOne("SELECT * FROM objects WHERE ID='$id'");
 $recOut = $rec;
 if ($rec['ID']){
@@ -27,6 +40,8 @@ foreach($recProperties as $property)
 		$recOut["ENABLE"] = $property['VALUE'];
 	if ($property['TITLE'] == "Crontab") 
 		$recOut["CRONTAB"] = $property['VALUE'];
+	if ($property['TITLE'] == "Category") 
+		$recOut["CATEGORY"] = $property['VALUE'];
 }    
 $recCode=SQLSelectOne("SELECT * FROM `methods` WHERE `OBJECT_ID` ='$id' AND TITLE='Run'");
 }
@@ -44,6 +59,7 @@ if ($this->mode=='update') {
     global $enable;
     global $code;
     $recCode['CODE']=$code;
+    global $category;
     
     //check name object
     if ($title!="" && $crontab!="")
@@ -87,6 +103,8 @@ if ($this->mode=='update') {
 			sg($rec['TITLE'].".Enable",1);
 		else
 			sg($rec['TITLE'].".Enable",0);	  
+        sg($rec['TITLE'].".Category",$category);
+		
       $out['OK']=1;
     } else {
       $out['ERR']=1;
@@ -95,6 +113,7 @@ if ($this->mode=='update') {
 	$recOut["CRONTAB"] = $crontab;
 	$recOut["TITLE"] = $title;
 	$recOut["DESCRIPTION"] = $description;
+	$recOut["CATEGORY"] = $category;
   }
 }
 if ($rec['ID'])

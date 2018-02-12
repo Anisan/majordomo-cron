@@ -51,22 +51,46 @@
 <!-- Enable -->
 <div class="form-group">
  <label class="control-label">Enable</label>
- <div class="controls"><input type="checkbox" name="enable" value="1"[#if ENABLE="1"#] checked[#endif#]></div>
+ <div class="col-sm-5"><input type="checkbox" name="enable" value="1"[#if ENABLE="1"#] checked[#endif#]></div>
 </div>
 <!-- Name -->
 <div class="form-group">
  <label class="control-label">Title <font color="red">*</font></label>
- <div class="controls"><input  type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
+ <div class="col-sm-5"><input  type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
 </div>
 <!-- DESCRIPTION -->
 <div class="form-group">
  <label class="control-label">Description</label>
- <div class="controls"><input  type="text" name="description" value="[#DESCRIPTION#]" class="form-control input"></div>
+ <div class="col-sm-5"><input  type="text" name="description" value="[#DESCRIPTION#]" class="form-control input"></div>
+</div>
+<script>
+$(function() {
+  $('.dropdown-menu a').click(function() {
+    console.log($(this).attr('data-value'));
+    $(this).closest('.dropdown').find('input.category')
+      .val($(this).attr('data-value'));
+  });
+});
+</script>
+<!-- CATEGORY -->
+<div class="form-group">
+    <label class="control-label"><#LANG_CATEGORY#></label>
+    <div class="col-sm-5">
+    <div class="input-group dropdown">
+        <input type="text" class="form-control category dropdown-toggle" name="category" value="[#CATEGORY#]">
+        <ul class="dropdown-menu">
+            [#begin CATEGORIES#]
+            <li><a href="#" data-value="[#NAME#]">[#TITLE#]</a></li>
+            [#end CATEGORIES#]
+        </ul>
+        <span role="button" class="input-group-addon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></span>
+    </div>
+</div>
 </div>
 <!-- CRONTAB -->
 <div class="form-group">
  <label class="control-label">Crontab <font color="red">*</font></label>
- <div class="controls input-group">
+ <div class="col-sm-5 input-group">
     <input  type="text" name="crontab" value="[#CRONTAB#]" class="form-control input">
     <span class="input-group-btn">
         <button class="btn btn-secondary" data-toggle="modal" data-target="#about">Help&nbsp;&nbsp;<span class="glyphicon glyphicon-question-sign"></span>

@@ -22,7 +22,7 @@ $recCategory = SQLSelectOne("SELECT * FROM properties WHERE CLASS_ID = ".$rec['I
     
 $sql = "select value from pvalues where PROPERTY_ID=".$recCategory["ID"];
 $recCats=SQLSelect($sql);
-$cats = array_count_values(array_column($recCats, 'value'));
+$cats = array_count_values(array_map(function($element) {  return $element['value'];}, $recCats));
 $categories = array();
 foreach ($cats as $key => $value)
 {

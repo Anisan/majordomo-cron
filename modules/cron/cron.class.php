@@ -192,7 +192,7 @@ function delete_job($id) {
     //echo $sql;
     $jobs=SQLSelect($sql);
     $out['TOTAL'] = count($jobs);
-    $cats = array_count_values(array_column($jobs, 'CATEGORY'));
+    $cats = array_count_values(array_map(function($element) {  return $element['CATEGORY'];}, $jobs ));
     $categories = array();
     foreach ($cats as $key => $value)
     {

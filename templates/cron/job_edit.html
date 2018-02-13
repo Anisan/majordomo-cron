@@ -13,7 +13,7 @@
 2. Час (0 - 23)<br>
 3. День (1 - 31)<br>
 4. Месяц (1 - 12)<br>
-5. День недели (0 - 7) (Воскресенье =0 или =7)<br>
+5. День недели (0 - 6) (Воскресенье = 0)<br>
                 </p>
                 <p><b>Специальные символы</b><br>
 / - приращение значений. Например, "*/15" в области "Минута" будет выполнять каждые 15 минут;<br>
@@ -51,7 +51,7 @@
 <!-- Enable -->
 <div class="form-group">
  <label class="control-label">Enable</label>
- <div class="col-sm-5"><input type="checkbox" name="enable" value="1"[#if ENABLE="1"#] checked[#endif#]></div>
+ <div class="col-sm-5"><input id="enable" name="enable" type="checkbox" [#if ENABLE="1"#] checked[#endif#] data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger"></div>
 </div>
 <!-- Name -->
 <div class="form-group">

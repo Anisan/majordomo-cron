@@ -99,6 +99,11 @@
  [#if SORTBY="DESCRIPTION DESC"#](-)[#endif#]</nobr> 
  </td>
  <td>
+ <a href="?sortby_jobs=CATEGORY">Category</a><nobr>
+ [#if SORTBY="CATEGORY"#](+)[#endif#]
+ [#if SORTBY="CATEGORY DESC"#](-)[#endif#]</nobr> 
+ </td>
+ <td>
  <a href="?sortby_jobs=NEXT_RUN">Next run</a><nobr>
  [#if SORTBY="NEXT_RUN"#](+)[#endif#]
  [#if SORTBY="NEXT_RUN DESC"#](-)[#endif#]</nobr> 
@@ -114,11 +119,7 @@
 <tr class="hover_btn2">
  <td>
   <a href="?view_mode=job_switch&title=[#TITLE#]" title="Switch Enable">
- [#if ENABLE==1#]
-   <img src="./img/icons/status/green_32.png">
-  [#else#]
-   <img src="./img/icons/status/red_32.png">
-  [#endif#] 
+  <input id="enable" name="enable" type="checkbox" [#if ENABLE="1"#] checked[#endif#] data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger">
   </a>
  </td>
  <td>
@@ -131,6 +132,13 @@
  <td>
   [#if DESCRIPTION!=""#]
    [#DESCRIPTION#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td>
+  [#if CATEGORY!=""#]
+   [#CATEGORY#]
   [#else#]
    &nbsp;
   [#endif#]

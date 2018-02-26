@@ -51,7 +51,7 @@ if ($this->mode=='update') {
   if ($this->tab=='') {
     global $title;
     //delete old job
-    SQLExec("DELETE FROM jobs WHERE title='Cron_".$rec['TITLE']."'"); 
+    SQLExec("DELETE FROM jobs WHERE title='Cron_".DBSafe($rec['TITLE'])."'"); 
     $rec['TITLE']=$title;
     global $description;
     $rec['DESCRIPTION']=$description;
@@ -64,7 +64,7 @@ if ($this->mode=='update') {
     //check name object
     if ($title!="" && $crontab!="")
     {
-        $recDublicate=SQLSelectOne("SELECT * FROM objects WHERE TITLE='".$title."'");
+        $recDublicate=SQLSelectOne("SELECT * FROM objects WHERE TITLE='".DBSafe($title)."'");
         if ($recDublicate['ID']){
             if ($rec['ID']!=$recDublicate['ID'])
             {
@@ -83,7 +83,7 @@ if ($this->mode=='update') {
 			SQLUpdate("objects", $rec); // update
 		} 
 		else {
-			$class = SQLSelectOne("select ID from classes where TITLE='".$this->nameClass."';");
+			$class = SQLSelectOne("select ID from classes where TITLE='".DBSafe($this->nameClass)."';");
 			$rec['CLASS_ID']=$class['ID'];
 			$rec['ID']=SQLInsert("objects", $rec); // adding new record
 			$id=$rec['ID'];
@@ -98,8 +98,8 @@ if ($this->mode=='update') {
 			$recCode['CALL_PARENT']=1;
 			$recCode['ID']=SQLInsert("methods", $recCode); // adding new record			
 		}
-		sg($rec['TITLE'].".Crontab",$crontab);
-		if ($enable==1)
+    sg($rec['TITLE'].".Crontab",$crontab);
+    if ($enable=='on')
 			sg($rec['TITLE'].".Enable",1);
 		else
 			sg($rec['TITLE'].".Enable",0);	  
@@ -109,7 +109,7 @@ if ($this->mode=='update') {
     } else {
       $out['ERR']=1;
     }
-	$recOut["ENABLE"] = $enable;
+	$recOut["ENABLE"] = $enable == 'on' ? 1 : 0;
 	$recOut["CRONTAB"] = $crontab;
 	$recOut["TITLE"] = $title;
 	$recOut["DESCRIPTION"] = $description;

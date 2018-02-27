@@ -59,6 +59,9 @@
 <!--#
  @version 0.2
 #-->
+<div id="alert" class="alert alert-success fade">
+Message...
+</div>
 
 <table width=100% border=0><tr>
 <td valign=top>
@@ -79,6 +82,20 @@
 [#endif PAGES#]
 <!-- / paging -->
 <!-- search results (list) -->
+<script language="javascript">
+        function changeEnable(task) {
+            var url="?ajax=1&view_mode=job_switch&title="+encodeURIComponent(task);
+            $.ajax({
+              url: url,
+              }).done(function(data) { 
+              $('#alert').html(data);
+              $(".alert").removeClass("in").show();
+              $(".alert").delay(200).addClass("in").fadeOut(2000);
+         });
+        return false; 
+        }
+$(".alert").addClass("in").fadeOut(0);
+</script>
 <form action="?" method="post" name="frmList_cron" style="padding:0px">
 <table class="table table-stripped">
 <thead>
@@ -118,9 +135,7 @@
 [#begin JOBS#]
 <tr class="hover_btn2">
  <td>
-  <a href="?view_mode=job_switch&title=[#TITLE#]" title="Switch Enable">
-  <input id="enable" name="enable" type="checkbox" [#if ENABLE="1"#] checked[#endif#] data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger">
-  </a>
+  <input id="enable" name="enable" type="checkbox" [#if ENABLE="1"#] checked[#endif#] data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" onchange="changeEnable('[#TITLE#]');">
  </td>
  <td>
   [#if TITLE!=""#]

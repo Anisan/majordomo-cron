@@ -136,7 +136,8 @@ function admin(&$out) {
 				sg($title.".Enable",0);
 			else
 				sg($title.".Enable",1); 
-			$this->redirect("?");
+            echo "Set ".$title.".Enable=".gg($title.".Enable");
+			exit;
         } 
     }
 }

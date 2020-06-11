@@ -46,7 +46,13 @@ foreach($recProperties as $property)
 $recCode=SQLSelectOne("SELECT * FROM `methods` WHERE `OBJECT_ID` ='$id' AND TITLE='Run'");
 }
 
-if ($this->mode=='update') { 
+if(defined('SETTINGS_CODEEDITOR_TURNONSETTINGS')) {
+	$out['SETTINGS_CODEEDITOR_TURNONSETTINGS'] = SETTINGS_CODEEDITOR_TURNONSETTINGS;
+	$out['SETTINGS_CODEEDITOR_UPTOLINE'] = SETTINGS_CODEEDITOR_UPTOLINE;
+	$out['SETTINGS_CODEEDITOR_SHOWERROR'] = SETTINGS_CODEEDITOR_SHOWERROR;
+}
+
+if ($this->mode=='update') {
   $ok=1;
   if ($this->tab=='') {
     global $title;
@@ -58,7 +64,10 @@ if ($this->mode=='update') {
     global $crontab;
     global $enable;
     global $code;
-    $recCode['CODE']=$code;
+
+	$old_code=$recCode['CODE'];
+	$recCode['CODE'] = $code;
+	
     global $category;
     
     //check name object
@@ -89,7 +98,27 @@ if ($this->mode=='update') {
 			$id=$rec['ID'];
 		} 
 		if ($recCode['ID']) {
-			SQLUpdate("methods", $recCode);
+			if ($code != '') {
+				$errors = php_syntax_error($code);
+			
+				if ($errors) {
+					$out['ERR_LINE'] = preg_replace('/[^0-9]/', '', substr(stristr($errors, 'php on line '), 0, 18))-2;
+					$errorStr = explode('Parse error: ', htmlspecialchars(strip_tags(nl2br($errors))));
+					$errorStr = explode('Errors parsing', $errorStr[1]);
+					$errorStr = explode(' in ', $errorStr[0]);
+					$out['ERRORS'] = $errorStr[0];
+					$out['ERR_FULL'] = $errorStr[0].' '.$errorStr[1];
+					$out['ERR_OLD_CODE'] = $old_code;
+					$error_code=1;
+					$out['ERR']=1;
+				} else {
+					$error_code=0;
+					SQLUpdate("methods", $recCode);
+				}
+			} else {
+				$error_code=0;
+				SQLUpdate("methods", $recCode);
+			}
 		}
 		else {
 			//create methods
@@ -105,7 +134,7 @@ if ($this->mode=='update') {
 			sg($rec['TITLE'].".Enable",0);	  
         sg($rec['TITLE'].".Category",$category);
 		
-      $out['OK']=1;
+      if($error_code == 0) $out['OK']=1;
     } else {
       $out['ERR']=1;
     }

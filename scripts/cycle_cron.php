@@ -17,9 +17,15 @@ setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 $latest_check=0;
 $checkEvery=60;
 $cron_module->rebootJobs();
+$cycleVarName='ThisComputer.'.str_replace('.php', '', basename(__FILE__)).'Run';
 while (1)
 {
-   setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+  //setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+  if ($latest_check_cycle + 30 < time())
+           {
+       $latest_check_cycle = time();
+       saveToCache("MJD:$cycleVarName", $latest_check_cycle);
+           }
    if ((time()-$latest_check)>$checkEvery) {
     $latest_check=time();
     $cron_module->processCycle();

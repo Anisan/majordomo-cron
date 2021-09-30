@@ -24,7 +24,7 @@ while (1)
   if ($latest_check_cycle + 30 < time())
            {
        $latest_check_cycle = time();
-       saveToCache("MJD:$cycleVarName", $latest_check_cycle);
+       setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', $latest_check_cycle, 1);
            }
    if ((time()-$latest_check)>$checkEvery) {
     $latest_check=time();
